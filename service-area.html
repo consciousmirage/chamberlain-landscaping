@@ -8,7 +8,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="style.css" />
+<style>
+  #svcmap{width:100%;height:430px;background:#eee;}
+  .area-label{background:rgba(255,255,255,.92);border:1px solid rgba(58,46,32,.18);border-radius:6px;
+    font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:12.5px;color:#243a29;
+    padding:3px 8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap;}
+  .area-label.gold{color:#7a5e1f;}
+  .leaflet-container{font-family:'Source Sans 3',sans-serif;}
+</style>
 </head>
 <body>
 
@@ -61,11 +70,7 @@
       <div class="cta-btns" style="margin-top:28px;justify-content:flex-start;"><a class="btn btn-primary" href="tel:+18014488739">Call (801) 448-8739</a><a class="btn btn-ghost-dark" href="sms:+18014488739">Text us</a></div>
     </div>
     <div class="map-embed">
-      <iframe
-        title="Chamberlain Landscaping service area — Bountiful and Salt Lake City, Utah"
-        src="https://www.google.com/maps?q=Bountiful,%20UT&z=11&output=embed"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div id="svcmap" role="img" aria-label="Map highlighting Chamberlain Landscaping service areas: The Avenues, Salt Lake City and Bountiful, Utah"></div>
     </div>
   </div>
 </section>
@@ -149,6 +154,42 @@
   <a class="btn btn-ghost-dark" href="sms:+18014488739">Text us</a>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  (function(){
+    if(!window.L) return;
+    var map = L.map('svcmap', {scrollWheelZoom:false, zoomControl:true});
+    map.setView([40.82,-111.88], 12);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
+    }).addTo(map);
+
+    var green='#2F4A34', gold='#b1924f', tan='#C9B08A';
+
+    // Salt Lake City service area
+    var slc = L.circle([40.7600,-111.8910], {radius:6800, color:green, weight:2,
+      fillColor:green, fillOpacity:0.10}).addTo(map);
+    L.tooltip({permanent:true, direction:'center', className:'area-label', offset:[0,70]})
+      .setLatLng([40.7600,-111.8910]).setContent('Salt Lake City').addTo(map);
+
+    // Bountiful
+    var bountiful = L.circle([40.8894,-111.8808], {radius:3400, color:tan, weight:2,
+      fillColor:tan, fillOpacity:0.22}).addTo(map);
+    L.tooltip({permanent:true, direction:'center', className:'area-label', offset:[0,0]})
+      .setLatLng([40.8894,-111.8808]).setContent('Bountiful').addTo(map);
+
+    // The Avenues (priority) — outlined rectangle
+    var aves = L.polygon([
+      [40.7702,-111.8905],[40.7702,-111.8520],
+      [40.7885,-111.8520],[40.7885,-111.8905]
+    ], {color:gold, weight:3, fillColor:gold, fillOpacity:0.35}).addTo(map);
+    L.tooltip({permanent:true, direction:'center', className:'area-label gold'})
+      .setLatLng([40.7793,-111.8712]).setContent('The Avenues').addTo(map);
+
+    var group = L.featureGroup([slc, bountiful, aves]);
+    map.fitBounds(group.getBounds().pad(0.18));
+  })();
+</script>
 <script>
   var toggle = document.getElementById('menuToggle');
   var links = document.getElementById('navLinks');
