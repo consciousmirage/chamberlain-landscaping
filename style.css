@@ -337,3 +337,44 @@ footer a:hover{color:var(--tan);}
   .gal-grid .wide{grid-column:span 1;}
   .gal-grid .tall{grid-row:span 1;}
 }
+
+/* ---------- HERO TAG (readable over photo) ---------- */
+.hero-tag{
+  display:inline-block;
+  background:rgba(20,30,22,0.72);
+  color:#f1e4c8 !important;
+  padding:7px 14px;border-radius:999px;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  font-size:0.78rem;line-height:1.4;
+}
+.hero{background-position:center 55%;}
+
+/* ---------- BOOKING FORM ---------- */
+.book{scroll-margin-top:90px;}
+.book-card{background:#fff;border:1px solid rgba(90,70,50,0.14);border-radius:16px;padding:32px;max-width:760px;margin:0 auto;box-shadow:0 14px 40px rgba(42,32,20,0.08);}
+.book-card h2{margin-bottom:8px;}
+.book-card .lead{color:#5b5346;margin-bottom:24px;}
+.book-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.book-grid .full{grid-column:1/-1;}
+.book-grid label{display:grid;gap:6px;font-weight:600;font-size:0.95rem;color:var(--evergreen);min-width:0;}
+.book-grid label small{font-weight:400;color:#7a705f;}
+.book-grid input,.book-grid select,.book-grid textarea{
+  width:100%;box-sizing:border-box;font:inherit;font-size:16px;
+  padding:12px 14px;border:1px solid rgba(90,70,50,0.25);border-radius:10px;background:var(--cream);color:#2a2014;
+}
+.book-grid textarea{min-height:110px;resize:vertical;}
+.book-grid input:focus,.book-grid select:focus,.book-grid textarea:focus{outline:2px solid var(--evergreen);outline-offset:1px;border-color:transparent;}
+.book-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:22px;}
+.book-actions .btn{border:none;cursor:pointer;font-size:1rem;}
+.book-actions .alt{color:#5b5346;}
+.book-actions .alt a{color:var(--evergreen);font-weight:700;text-decoration:underline;}
+.book-status{margin-top:16px;padding:14px 16px;border-radius:10px;font-weight:600;}
+.book-status.ok{background:rgba(47,74,52,0.1);color:var(--evergreen);}
+.book-status.err{background:rgba(160,60,30,0.1);color:#8a3418;}
+.hp{position:absolute;left:-9999px;}
+@media(max-width:640px){
+  .book-card{padding:22px 18px;border-radius:12px;}
+  .book-grid{grid-template-columns:1fr;}
+  .book-actions .btn{width:100%;justify-content:center;}
+  .hero-tag{font-size:0.7rem;letter-spacing:0.12em;}
+}

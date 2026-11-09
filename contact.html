@@ -36,10 +36,59 @@
 <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1681853108586-f29b4ef5c0fb?auto=format&fit=crop&w=1600&q=80');">
   <div class="ph-inner">
     <p class="eyebrow">Get in touch</p>
-    <h1>Text us for a free quote.</h1>
-    <p>The fastest way to reach us is a text. Send your address and what you need — a real person texts back the same day.</p>
+    <h1>Book a free walkthrough.</h1>
+    <p>Fill out the form below and we'll confirm a time, usually the same day. Prefer to talk? Call or text anytime.</p>
   </div>
 </section>
+
+<!-- BOOKING FORM -->
+<section class="bg-cream pad book" id="book">
+  <div class="wrap">
+    <div class="book-card">
+      <p class="eyebrow">Book online</p>
+      <h2>Book a free walkthrough.</h2>
+      <p class="lead">Tell us about the yard and when works for you. Nate or Stratton will confirm a time, usually the same day.</p>
+      <form id="bookForm" novalidate>
+        <div class="book-grid">
+          <label>Your name<input id="b-name" name="name" type="text" autocomplete="name" required></label>
+          <label>Phone<input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+          <label class="full">Property address<input id="b-address" name="address" type="text" autocomplete="street-address" required></label>
+          <label><span>Email <small>(optional)</small></span><input id="b-email" name="email" type="email" autocomplete="email"></label>
+          <label>What do you need?
+            <select id="b-service" name="service" required>
+              <option value="">Pick one</option>
+              <option>Weekly mowing</option>
+              <option>Trimming &amp; edging</option>
+              <option>Weeding &amp; beds</option>
+              <option>Hedges &amp; shrubs</option>
+              <option>Sprinkler service</option>
+              <option>Seasonal clean-up</option>
+              <option>Sod or bigger project</option>
+              <option>Not sure yet</option>
+            </select>
+          </label>
+          <label>Best day for us to come by<input id="b-date" name="preferred_date" type="date"></label>
+          <label>Time of day
+            <select id="b-time" name="preferred_time">
+              <option>Anytime</option>
+              <option>Morning</option>
+              <option>Afternoon</option>
+              <option>Evening</option>
+            </select>
+          </label>
+          <label class="full"><span>Anything else? <small>(optional)</small></span><textarea id="b-notes" name="details" placeholder="Size of the yard, what bugs you about it, gate codes, dogs..."></textarea></label>
+          <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </div>
+        <div class="book-actions">
+          <button class="btn btn-primary" type="submit" id="bookBtn">Request my walkthrough</button>
+          <span class="alt">Rather talk? Call <a href="tel:+18014488739">(801) 448-8739</a></span>
+        </div>
+        <div class="book-status" id="bookStatus" role="status" hidden></div>
+      </form>
+    </div>
+  </div>
+</section>
+
 
 <!-- CONTACT CARDS -->
 <section class="bg-cream pad">
@@ -75,7 +124,7 @@
       <div class="contact-card">
         <div class="v-ic" aria-hidden="true">📍</div>
         <h3>Where we work</h3>
-        <p>Based in Salt Lake City, serving Bountiful, Centerville, North Salt Lake, Woods Cross, Farmington &amp; the foothills.</p>
+        <p>Based in Salt Lake City, serving the Avenues, Bountiful, Centerville, Farmington, Fruit Heights, Kaysville &amp; the foothills.</p>
         <a class="btn btn-ghost-dark" href="service-area.html">See service area</a>
       </div>
 
@@ -158,8 +207,8 @@
 
 <!-- MOBILE STICKY BAR -->
 <div class="mobile-bar">
-  <a class="btn btn-primary" href="tel:+18014488739">Call us</a>
-  <a class="btn btn-ghost-dark" href="sms:+18014488739">Text us</a>
+  <a class="btn btn-primary" href="contact.html#book">Book</a>
+  <a class="btn btn-ghost-dark" href="tel:+18014488739">Call</a>
 </div>
 
 <script>
@@ -177,6 +226,35 @@
       toggle.setAttribute('aria-expanded','false');
     });
   });
+</script>
+
+<script>
+(function(){
+  var f=document.getElementById('bookForm'); if(!f) return;
+  var st=document.getElementById('bookStatus'), btn=document.getElementById('bookBtn');
+  var d=document.getElementById('b-date'); try{d.min=new Date().toISOString().slice(0,10);}catch(e){}
+  function show(cls,msg){st.className='book-status '+cls;st.textContent=msg;st.hidden=false;}
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var need=['b-name','b-phone','b-address','b-service'];
+    for(var i=0;i<need.length;i++){var el=document.getElementById(need[i]); if(!el.value.trim()){el.focus();show('err','Please fill in your name, phone, address and what you need.');return;}}
+    var data={}; new FormData(f).forEach(function(v,k){data[k]=v;});
+    if(data._honey) return;
+    delete data._honey;
+    data._subject='New walkthrough request: '+data.name+' ('+data.service+')';
+    data._template='table'; data._captcha='false';
+    if(data.email) data._replyto=data.email;
+    btn.disabled=true; btn.textContent='Sending...';
+    fetch('https://formsubmit.co/ajax/chamberlainyardcare@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+      .then(function(r){return r.json();})
+      .then(function(r){
+        if(r.success==='true'||r.success===true){f.reset();show('ok','Got it, thanks '+data.name.split(' ')[0]+"! We'll text you shortly to confirm a time.");}
+        else throw new Error(r.message||'fail');
+      })
+      .catch(function(){show('err',"That didn't go through. Please call or text us at (801) 448-8739.");})
+      .then(function(){btn.disabled=false;btn.textContent='Request my walkthrough';});
+  });
+})();
 </script>
 
 </body>
