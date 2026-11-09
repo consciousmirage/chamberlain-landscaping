@@ -245,14 +245,22 @@
     data._template='table'; data._captcha='false';
     if(data.email) data._replyto=data.email;
     btn.disabled=true; btn.textContent='Sending...';
-    fetch('https://formsubmit.co/ajax/chamberlainyardcare@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+    var ctrl=('AbortController' in window)?new AbortController():null; var timer=setTimeout(function(){if(ctrl)ctrl.abort();},15000);
+    fetch('https://formsubmit.co/ajax/chamberlainyardcare@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data),signal:ctrl?ctrl.signal:undefined})
       .then(function(r){return r.json();})
       .then(function(r){
         if(r.success==='true'||r.success===true){f.reset();show('ok','Got it, thanks '+data.name.split(' ')[0]+"! We'll text you shortly to confirm a time.");}
         else throw new Error(r.message||'fail');
       })
-      .catch(function(){show('err',"That didn't go through. Please call or text us at (801) 448-8739.");})
-      .then(function(){btn.disabled=false;btn.textContent='Request my walkthrough';});
+      .catch(function(){
+        var body='Hi, this is '+data.name+'. I\'d like a walkthrough at '+data.address+' for '+data.service+(data.preferred_date?' around '+data.preferred_date:'')+'. My number is '+data.phone+'.';
+        st.className='book-status err'; st.hidden=false;
+        st.innerHTML='';
+        st.appendChild(document.createTextNode("Our form is having trouble right now. Tap below to send it as a text instead, or call (801) 448-8739. "));
+        var a=document.createElement('a'); a.href='sms:+18014488739?&body='+encodeURIComponent(body); a.textContent='Send as a text'; a.style.textDecoration='underline'; st.appendChild(a);
+      })
+      .then(function(){clearTimeout(timer);
+btn.disabled=false;btn.textContent='Request my walkthrough';});
   });
 })();
 </script>
